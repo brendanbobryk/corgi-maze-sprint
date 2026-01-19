@@ -26,6 +26,11 @@ function App() {
   // Keyboard controls
   useEffect(() => {
     const handleKey = (e) => {
+      // Prevent default scroll behavior
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+      }
+
       setPlayerPos(([x, y]) => {
         let newX = x;
         let newY = y;
@@ -62,6 +67,13 @@ function App() {
     }
   }, [playerPos, timerActive]);
 
+  // Restart function
+  const handleRestart = () => {
+    setPlayerPos([0, 0]);
+    setTime(0);
+    setTimerActive(false);
+  };
+
   return (
     <div className="app">
       <div className="game-container">
@@ -87,6 +99,9 @@ function App() {
             </div>
           ))}
         </div>
+        <button className="restart-btn" onClick={handleRestart}>
+          Restart Game
+        </button>
         <p className="instructions">Use arrow keys to move the corgi to the goal!</p>
       </div>
     </div>
