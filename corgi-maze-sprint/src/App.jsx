@@ -64,29 +64,31 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Corgi Maze Sprint</h1>
-      <p className="timer">Time: {time}s</p>
-      <div className="maze">
-        {MAZE.map((row, i) => (
-          <div key={i} className="row">
-            {row.map((cell, j) => {
-              const isPlayer = playerPos[0] === i && playerPos[1] === j;
-              const isGoal = i === 4 && j === 4;
-              return (
-                <div
-                  key={j}
-                  className={`cell ${cell === 1 ? "wall" : ""} ${
-                    isPlayer ? "player" : ""
-                  } ${isGoal ? "goal" : ""}`}
-                >
-                  {isPlayer ? "🐶" : isGoal ? "🏁" : ""}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+      <div className="game-container">
+        <h1>Corgi Maze Sprint</h1>
+        <p className="timer">Time: {time}s</p>
+        <div className="maze">
+          {MAZE.map((row, i) => (
+            <div key={i} className="row">
+              {row.map((cell, j) => {
+                const isPlayer = playerPos[0] === i && playerPos[1] === j;
+                const isGoal = i === 4 && j === 4;
+                return (
+                  <div
+                    key={j}
+                    className={`cell ${cell === 1 ? "wall" : ""} ${
+                      isPlayer ? "player" : ""
+                    } ${isGoal ? "goal" : ""}`}
+                  >
+                    {isPlayer ? "🐶" : isGoal ? "🏁" : ""}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        <p className="instructions">Use arrow keys to move the corgi to the goal!</p>
       </div>
-      <p className="instructions">Use arrow keys to move the corgi to the goal!</p>
     </div>
   );
 }

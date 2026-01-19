@@ -1,14 +1,39 @@
-.app {
-  text-align: center;
-  font-family: "Arial", sans-serif;
-  padding: 20px;
+/* Full viewport centering */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* full viewport height */
+  width: 100vw;
+  background-color: #f0f0f0;
+}
+
+/* Container for the game elements */
+.game-container {
+  text-align: center;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  /* Remove inline-block */
+  max-width: 400px; /* optional, constrains container width */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Timer styling */
 .timer {
   font-size: 18px;
   margin-bottom: 10px;
 }
 
+/* Maze grid */
 .maze {
   display: inline-block;
   margin-top: 20px;
@@ -35,11 +60,11 @@
 }
 
 .player {
-  background-color: #ffa500; /* orange */
+  background-color: #ffa500;
 }
 
 .goal {
-  background-color: #00c853; /* green */
+  background-color: #00c853;
 }
 
 .instructions {
