@@ -4,12 +4,10 @@ import "./App.css";
 const MAZE_SIZE = 10;
 
 function generateMaze() {
-  // Initialize full maze of walls
   const maze = Array.from({ length: MAZE_SIZE }, () =>
     Array.from({ length: MAZE_SIZE }, () => 1)
   );
 
-  // Keep track of visited cells
   const visited = Array.from({ length: MAZE_SIZE }, () =>
     Array.from({ length: MAZE_SIZE }, () => false)
   );
@@ -24,7 +22,7 @@ function generateMaze() {
 
   function dfs(r, c) {
     visited[r][c] = true;
-    maze[r][c] = 0; // empty space
+    maze[r][c] = 0;
 
     const directions = shuffle([
       [0, 2],
@@ -37,18 +35,25 @@ function generateMaze() {
       const nr = r + dr;
       const nc = c + dc;
       if (inBounds(nr, nc) && !visited[nr][nc]) {
-        // remove wall between current and neighbor
-        maze[r + dr / 2][c + dc / 2] = 0;
+        maze[r + dr / 2][c + dc / 2] = 0; // remove wall between
         dfs(nr, nc);
       }
     }
   }
 
-  // Start DFS at top-left
   dfs(0, 0);
 
   // Ensure goal is open
   maze[MAZE_SIZE - 1][MAZE_SIZE - 1] = 0;
+
+  // Guarantee a path to goal along bottom row and rightmost column
+  let r = 0;
+  let c = 0;
+  while (r < MAZE_SIZE - 1 || c < MAZE_SIZE - 1) {
+    if (r < MAZE_SIZE - 1 && Math.random() < 0.5) r++;
+    else if (c < MAZE_SIZE - 1) c++;
+    maze[r][c] = 0;
+  }
 
   return maze;
 }
