@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 // 10x10 maze (0 = path, 1 = wall)
@@ -19,6 +19,12 @@ function App() {
   const [playerPos, setPlayerPos] = useState([0, 0]);
   const [time, setTime] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
+  const containerRef = useRef(null);
+
+  // Focus the container so arrow keys work
+  useEffect(() => {
+    containerRef.current.focus();
+  }, []);
 
   // Timer effect
   useEffect(() => {
@@ -32,7 +38,7 @@ function App() {
   // Keyboard controls
   useEffect(() => {
     const handleKey = (e) => {
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+      if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) {
         e.preventDefault();
       }
 
@@ -45,12 +51,9 @@ function App() {
         if (e.key === "ArrowLeft") newY -= 1;
         if (e.key === "ArrowRight") newY += 1;
 
-        // Bounds check
         if (newX < 0 || newX >= MAZE.length || newY < 0 || newY >= MAZE[0].length) return [x, y];
-        // Wall check
         if (MAZE[newX][newY] === 1) return [x, y];
 
-        // Goal check
         if (newX === MAZE.length-1 && newY === MAZE[0].length-1) {
           alert(`🎉 You win! Time: ${time}s`);
           setTimerActive(false);
@@ -61,8 +64,9 @@ function App() {
       });
     };
 
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    const container = containerRef.current;
+    container.addEventListener("keydown", handleKey);
+    return () => container.removeEventListener("keydown", handleKey);
   }, [time]);
 
   // Start timer on first move
@@ -77,11 +81,16 @@ function App() {
     setPlayerPos([0, 0]);
     setTime(0);
     setTimerActive(false);
+    containerRef.current.focus();
   };
 
   return (
     <div className="app">
-      <div className="game-container">
+      <div
+        className="game-container"
+        ref={containerRef}
+        tabIndex={0}  // make div focusable
+      >
         <h1>Corgi Maze Sprint</h1>
         <p className="timer">Time: {time}s</p>
         <div className="maze">

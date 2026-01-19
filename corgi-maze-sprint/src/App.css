@@ -4,7 +4,7 @@ html, body {
   padding: 0;
   height: 100%;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #121212; /* Dark mode background */
+  background-color: #121212; /* Dark background */
   color: #ffffff;
 }
 
@@ -15,23 +15,20 @@ html, body {
   height: 100vh;
   width: 100vw;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Game container */
 .game-container {
   text-align: center;
-  padding: 40px 50px;
+  padding: 30px 30px;
   background: linear-gradient(145deg, #1f1f1f, #181818);
   border-radius: 20px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-  max-width: 480px;
-  width: 100%;
+  max-width: 90vw;  /* allow container to scale */
+  width: auto;
   box-sizing: border-box;
-  transition: transform 0.2s ease;
-}
-
-.game-container:hover {
-  transform: translateY(-3px);
+  overflow: hidden;
 }
 
 /* Title */
@@ -53,24 +50,22 @@ h1 {
 
 /* Maze grid */
 .maze {
-  display: inline-block;
-  margin-top: 20px;
-  user-select: none;
-}
-
-.row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr); /* row-wise filling */
+  grid-auto-flow: row; /* ensure proper row orientation */
+  grid-gap: 4px;
+  margin: 20px auto;
+  max-width: 100%;
+  width: auto;
 }
 
 .cell {
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  margin: 4px;
+  aspect-ratio: 1 / 1; /* square cells */
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  font-size: clamp(16px, 2vw, 32px); /* responsive font */
   background-color: #2a2a2a;
   border: 2px solid #3c3c3c;
   box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5),
@@ -78,7 +73,7 @@ h1 {
   transition: all 0.2s ease;
 }
 
-/* Wall */
+/* Walls */
 .wall {
   background-color: #444;
   border: 2px solid #555;
