@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
+// 10x10 maze (0 = path, 1 = wall)
 const MAZE = [
-  [0, 1, 0, 0, 0],
-  [0, 1, 0, 1, 0],
-  [0, 0, 0, 1, 0],
-  [1, 1, 0, 1, 0],
-  [0, 0, 0, 0, 0],
+  [0,1,0,0,0,1,0,0,0,0],
+  [0,1,0,1,0,1,0,1,1,0],
+  [0,0,0,1,0,0,0,0,1,0],
+  [1,1,0,1,1,1,1,0,1,0],
+  [0,0,0,0,0,0,1,0,0,0],
+  [0,1,1,1,1,0,1,1,1,0],
+  [0,0,0,0,1,0,0,0,1,0],
+  [1,1,0,1,1,1,0,1,1,0],
+  [0,0,0,0,0,0,0,0,0,0],
+  [0,1,1,1,1,1,1,1,1,0]
 ];
 
 function App() {
@@ -26,7 +32,6 @@ function App() {
   // Keyboard controls
   useEffect(() => {
     const handleKey = (e) => {
-      // Prevent default scroll behavior
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
         e.preventDefault();
       }
@@ -41,12 +46,12 @@ function App() {
         if (e.key === "ArrowRight") newY += 1;
 
         // Bounds check
-        if (newX < 0 || newX >= 5 || newY < 0 || newY >= 5) return [x, y];
+        if (newX < 0 || newX >= MAZE.length || newY < 0 || newY >= MAZE[0].length) return [x, y];
         // Wall check
         if (MAZE[newX][newY] === 1) return [x, y];
 
         // Goal check
-        if (newX === 4 && newY === 4) {
+        if (newX === MAZE.length-1 && newY === MAZE[0].length-1) {
           alert(`🎉 You win! Time: ${time}s`);
           setTimerActive(false);
           return [newX, newY];
@@ -84,7 +89,7 @@ function App() {
             <div key={i} className="row">
               {row.map((cell, j) => {
                 const isPlayer = playerPos[0] === i && playerPos[1] === j;
-                const isGoal = i === 4 && j === 4;
+                const isGoal = i === MAZE.length-1 && j === MAZE[0].length-1;
                 return (
                   <div
                     key={j}
