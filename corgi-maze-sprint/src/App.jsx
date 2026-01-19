@@ -2,26 +2,54 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 
 const MAZE_SIZE = 10;
-const WALL_PROBABILITY = 0.3; // 30% chance for a wall
 
-// Generate a random maze
 function generateMaze() {
-  const maze = [];
-  for (let r = 0; r < MAZE_SIZE; r++) {
-    const row = [];
-    for (let c = 0; c < MAZE_SIZE; c++) {
-      // start and goal must be empty
-      if ((r === 0 && c === 0) || (r === MAZE_SIZE - 1 && c === MAZE_SIZE - 1)) {
-        row.push(0);
-      } else if (r === c) {
-        // make diagonal guaranteed path
-        row.push(0);
-      } else {
-        row.push(Math.random() < WALL_PROBABILITY ? 1 : 0);
+  // Initialize full maze of walls
+  const maze = Array.from({ length: MAZE_SIZE }, () =>
+    Array.from({ length: MAZE_SIZE }, () => 1)
+  );
+
+  // Keep track of visited cells
+  const visited = Array.from({ length: MAZE_SIZE }, () =>
+    Array.from({ length: MAZE_SIZE }, () => false)
+  );
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  function inBounds(r, c) {
+    return r >= 0 && r < MAZE_SIZE && c >= 0 && c < MAZE_SIZE;
+  }
+
+  function dfs(r, c) {
+    visited[r][c] = true;
+    maze[r][c] = 0; // empty space
+
+    const directions = shuffle([
+      [0, 2],
+      [0, -2],
+      [2, 0],
+      [-2, 0]
+    ]);
+
+    for (let [dr, dc] of directions) {
+      const nr = r + dr;
+      const nc = c + dc;
+      if (inBounds(nr, nc) && !visited[nr][nc]) {
+        // remove wall between current and neighbor
+        maze[r + dr / 2][c + dc / 2] = 0;
+        dfs(nr, nc);
       }
     }
-    maze.push(row);
   }
+
+  // Start DFS at top-left
+  dfs(0, 0);
+
+  // Ensure goal is open
+  maze[MAZE_SIZE - 1][MAZE_SIZE - 1] = 0;
+
   return maze;
 }
 
@@ -32,19 +60,16 @@ function App() {
   const [timerActive, setTimerActive] = useState(false);
   const containerRef = useRef(null);
 
-  // Focus game container
   useEffect(() => {
     containerRef.current.focus();
   }, []);
 
-  // Timer
   useEffect(() => {
     let interval;
     if (timerActive) interval = setInterval(() => setTime(t => t + 1), 1000);
     return () => clearInterval(interval);
   }, [timerActive]);
 
-  // Keyboard controls
   useEffect(() => {
     const handleKey = (e) => {
       if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
@@ -73,15 +98,13 @@ function App() {
     return () => container.removeEventListener("keydown", handleKey);
   }, [maze, time]);
 
-  // Start timer on first move
   useEffect(() => {
     if (!timerActive && (playerPos[0] !== 0 || playerPos[1] !== 0)) setTimerActive(true);
   }, [playerPos, timerActive]);
 
-  // Restart
   const handleRestart = () => {
     setMaze(generateMaze());
-    setPlayerPos([0,0]);
+    setPlayerPos([0, 0]);
     setTime(0);
     setTimerActive(false);
     containerRef.current.focus();
@@ -94,7 +117,10 @@ function App() {
       const isPlayer = playerPos[0] === r && playerPos[1] === c;
       const isGoal = r === MAZE_SIZE - 1 && c === MAZE_SIZE - 1;
       cells.push(
-        <div key={`${r}-${c}`} className={`cell ${maze[r][c] === 1 ? "wall" : ""} ${isPlayer ? "player" : ""} ${isGoal ? "goal" : ""}`}>
+        <div
+          key={`${r}-${c}`}
+          className={`cell ${maze[r][c] === 1 ? "wall" : ""} ${isPlayer ? "player" : ""} ${isGoal ? "goal" : ""}`}
+        >
           {isPlayer ? "🐶" : isGoal ? "🏁" : ""}
         </div>
       );
