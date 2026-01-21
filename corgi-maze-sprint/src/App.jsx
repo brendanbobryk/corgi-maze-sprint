@@ -54,6 +54,48 @@ function generateMaze(size) {
   return maze;
 }
 
+const THEMES = {
+  dark: {
+    "--bg": "#020617",
+    "--cell": "#0f172a",
+    "--wall": "#020617",
+    "--player": "#1d4ed8",
+    "--goal": "#065f46",
+    "--text": "#cbd5e1",
+    "--btn-bg": "#1f2933",
+    "--btn-text": "#cbd5e1",
+    "--btn-border": "#374151",
+    "--btn-active": "#3b82f6",
+    "--btn-active-border": "#60a5fa"
+  },
+  forest: {
+    "--bg": "#0b3d0b",
+    "--cell": "#145214",
+    "--wall": "#0b3d0b",
+    "--player": "#34d399",
+    "--goal": "#059669",
+    "--text": "#d9f99d",
+    "--btn-bg": "#145214",
+    "--btn-text": "#d9f99d",
+    "--btn-border": "#064e3b",
+    "--btn-active": "#10b981",
+    "--btn-active-border": "#059669"
+  },
+  desert: {
+    "--bg": "#3d2b1f",
+    "--cell": "#7c5a3d",
+    "--wall": "#3d2b1f",
+    "--player": "#fcd34d",
+    "--goal": "#f97316",
+    "--text": "#fde68a",
+    "--btn-bg": "#7c5a3d",
+    "--btn-text": "#fde68a",
+    "--btn-border": "#58331a",
+    "--btn-active": "#fbbf24",
+    "--btn-active-border": "#f97316"
+  }
+};
+
 function App() {
   const [mazeSize, setMazeSize] = useState(10);
   const [maze, setMaze] = useState(() => generateMaze(10));
@@ -61,6 +103,7 @@ function App() {
   const [time, setTime] = useState(0);
   const [moves, setMoves] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
+  const [theme, setTheme] = useState("dark");
 
   const containerRef = useRef(null);
 
@@ -76,6 +119,13 @@ function App() {
   useEffect(() => {
     setBestTime(localStorage.getItem(bestKey));
   }, [mazeSize]);
+
+  useEffect(() => {
+    const themeVars = THEMES[theme];
+    for (const [key, value] of Object.entries(themeVars)) {
+      document.documentElement.style.setProperty(key, value);
+    }
+  }, [theme]);
 
   useEffect(() => {
     let interval;
@@ -107,7 +157,6 @@ function App() {
 
         if (maze[newRow][newCol] === 1) return [row, col];
 
-        // ✅ Count valid moves only
         setMoves(m => m + 1);
 
         if (newRow === mazeSize - 1 && newCol === mazeSize - 1) {
@@ -148,11 +197,20 @@ function App() {
   };
 
   const sizeButtonStyle = (size) => ({
-    backgroundColor: mazeSize === size ? "#3b82f6" : "#1f2933",
-    color: mazeSize === size ? "#ffffff" : "#cbd5e1",
-    border: mazeSize === size ? "1px solid #60a5fa" : "1px solid #374151",
-    boxShadow: mazeSize === size ? "0 0 10px rgba(59,130,246,0.6)" : "none",
+    backgroundColor: mazeSize === size ? "var(--btn-active)" : "var(--btn-bg)",
+    color: mazeSize === size ? "#ffffff" : "var(--btn-text)",
+    border: mazeSize === size ? `1px solid var(--btn-active-border)` : `1px solid var(--btn-border)`,
+    boxShadow: mazeSize === size ? `0 0 10px ${mazeSize === size ? 'rgba(59,130,246,0.6)' : 'none'}` : "none",
     transform: mazeSize === size ? "scale(1.05)" : "scale(1)"
+  });
+
+  const themeButtonStyle = (t) => ({
+    backgroundColor: theme === t ? "var(--btn-active)" : "var(--btn-bg)",
+    color: theme === t ? "#ffffff" : "var(--btn-text)",
+    border: theme === t ? `1px solid var(--btn-active-border)` : `1px solid var(--btn-border)`,
+    borderRadius: "8px",
+    padding: "6px 12px",
+    cursor: "pointer"
   });
 
   const cells = [];
@@ -181,6 +239,12 @@ function App() {
           <button style={sizeButtonStyle(8)} onClick={() => restartGame(8)}>Small</button>
           <button style={sizeButtonStyle(10)} onClick={() => restartGame(10)}>Medium</button>
           <button style={sizeButtonStyle(14)} onClick={() => restartGame(14)}>Large</button>
+        </div>
+
+        <div className="controls" style={{marginTop: "6px"}}>
+          <button style={themeButtonStyle("dark")} onClick={() => setTheme("dark")}>Dark</button>
+          <button style={themeButtonStyle("forest")} onClick={() => setTheme("forest")}>Forest</button>
+          <button style={themeButtonStyle("desert")} onClick={() => setTheme("desert")}>Desert</button>
         </div>
 
         <p className="timer">
