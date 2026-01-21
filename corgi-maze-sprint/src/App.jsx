@@ -62,9 +62,18 @@ function App() {
   const [timerActive, setTimerActive] = useState(false);
   const containerRef = useRef(null);
 
+  const bestKey = `corgi-maze-best-${mazeSize}`;
+  const [bestTime, setBestTime] = useState(
+    () => localStorage.getItem(bestKey)
+  );
+
   useEffect(() => {
     containerRef.current.focus();
   }, []);
+
+  useEffect(() => {
+    setBestTime(localStorage.getItem(bestKey));
+  }, [mazeSize]);
 
   useEffect(() => {
     let interval;
@@ -97,8 +106,15 @@ function App() {
         if (maze[newRow][newCol] === 1) return [row, col];
 
         if (newRow === mazeSize - 1 && newCol === mazeSize - 1) {
-          alert(`🎉 You win! Time: ${time}s`);
           setTimerActive(false);
+
+          const storedBest = localStorage.getItem(bestKey);
+          if (!storedBest || time < Number(storedBest)) {
+            localStorage.setItem(bestKey, time);
+            setBestTime(time);
+          }
+
+          alert(`🎉 You win! Time: ${time}s`);
         }
 
         return [newRow, newCol];
@@ -108,7 +124,7 @@ function App() {
     const container = containerRef.current;
     container.addEventListener("keydown", handleKey);
     return () => container.removeEventListener("keydown", handleKey);
-  }, [maze, mazeSize, time]);
+  }, [maze, mazeSize, time, bestKey]);
 
   useEffect(() => {
     if (!timerActive && (playerPos[0] !== 0 || playerPos[1] !== 0)) {
@@ -168,6 +184,9 @@ function App() {
         </div>
 
         <p className="timer">Time: {time}s</p>
+        <p className="best-time">
+          Best: {bestTime ? `${bestTime}s` : "—"}
+        </p>
 
         <div
           className="maze"
