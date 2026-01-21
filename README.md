@@ -9,15 +9,19 @@ This project is part of a daily game challenge focused on building small, comple
 - Guaranteed solvable paths from start to goal  
 - Arrow key movement (up, down, left, right)  
 - Timer tracking how long it takes to reach the goal  
+- Move counter to track steps taken  
+- Best time tracking per maze size (saved locally)  
+- Selectable maze sizes: Small, Medium, Large  
+- Color themes for the entire UI: Dark, Forest, Desert  
 - Restart button for new mazes  
-- Polished dark-mode UI for easy viewing  
+- Polished, modern, and responsive UI  
 - Cute corgi and goal emojis 🐶🏁 
 
 ## Technologies Used
 
 - React (with hooks)
 - JavaScript
-- CSS
+- CSS (with theme support)
 
 ## How to Run
 
