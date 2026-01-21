@@ -1,8 +1,8 @@
-/* Theme-aware variables */
+/* Theme-aware variables with better visibility */
 :root {
   --bg: #020617;
-  --cell: #0f172a;
-  --wall: #020617;
+  --cell: #161b2d;        /* slightly lighter for contrast */
+  --wall: #0d0f1a;        /* slightly darker to stand out */
   --player: #1d4ed8;
   --goal: #065f46;
   --text: #cbd5e1;
@@ -87,29 +87,29 @@ h1 {
   justify-content: center;
   font-size: clamp(16px, 2vw, 32px);
   background-color: var(--cell);
-  border: 2px solid var(--btn-border);
-  box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5),
-              inset 2px 2px 5px rgba(255,255,255,0.05);
+  border: 2px solid var(--wall);
+  box-shadow: inset -2px -2px 6px rgba(0,0,0,0.6),
+              inset 2px 2px 6px rgba(255,255,255,0.08);
   transition: all 0.2s ease;
 }
 
 .wall {
   background-color: var(--wall);
-  border: 2px solid var(--btn-border);
-  box-shadow: inset -2px -2px 5px rgba(0,0,0,0.7),
-              inset 2px 2px 5px rgba(255,255,255,0.03);
+  border: 2px solid #1a1c2b;
+  box-shadow: inset -2px -2px 5px rgba(0,0,0,0.8),
+              inset 2px 2px 5px rgba(255,255,255,0.05);
 }
 
 .player {
   background-color: var(--player);
-  box-shadow: 0 0 10px var(--player)aa;
+  box-shadow: 0 0 12px var(--player)cc;
   transform: scale(1.1);
   transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .goal {
   background-color: var(--goal);
-  box-shadow: 0 0 10px var(--goal)aa;
+  box-shadow: 0 0 12px var(--goal)cc;
   transform: scale(1.1);
 }
 
