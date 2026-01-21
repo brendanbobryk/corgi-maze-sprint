@@ -59,7 +59,9 @@ function App() {
   const [maze, setMaze] = useState(() => generateMaze(10));
   const [playerPos, setPlayerPos] = useState([0, 0]);
   const [time, setTime] = useState(0);
+  const [moves, setMoves] = useState(0);
   const [timerActive, setTimerActive] = useState(false);
+
   const containerRef = useRef(null);
 
   const bestKey = `corgi-maze-best-${mazeSize}`;
@@ -105,6 +107,9 @@ function App() {
 
         if (maze[newRow][newCol] === 1) return [row, col];
 
+        // ✅ Count valid moves only
+        setMoves(m => m + 1);
+
         if (newRow === mazeSize - 1 && newCol === mazeSize - 1) {
           setTimerActive(false);
 
@@ -114,7 +119,7 @@ function App() {
             setBestTime(time);
           }
 
-          alert(`🎉 You win! Time: ${time}s`);
+          alert(`🎉 You win!\nTime: ${time}s\nMoves: ${moves + 1}`);
         }
 
         return [newRow, newCol];
@@ -124,7 +129,7 @@ function App() {
     const container = containerRef.current;
     container.addEventListener("keydown", handleKey);
     return () => container.removeEventListener("keydown", handleKey);
-  }, [maze, mazeSize, time, bestKey]);
+  }, [maze, mazeSize, time, moves, bestKey]);
 
   useEffect(() => {
     if (!timerActive && (playerPos[0] !== 0 || playerPos[1] !== 0)) {
@@ -137,6 +142,7 @@ function App() {
     setMazeSize(size);
     setPlayerPos([0, 0]);
     setTime(0);
+    setMoves(0);
     setTimerActive(false);
     containerRef.current.focus();
   };
@@ -172,18 +178,15 @@ function App() {
         <h1>Corgi Maze Sprint</h1>
 
         <div className="controls">
-          <button style={sizeButtonStyle(8)} onClick={() => restartGame(8)}>
-            Small
-          </button>
-          <button style={sizeButtonStyle(10)} onClick={() => restartGame(10)}>
-            Medium
-          </button>
-          <button style={sizeButtonStyle(14)} onClick={() => restartGame(14)}>
-            Large
-          </button>
+          <button style={sizeButtonStyle(8)} onClick={() => restartGame(8)}>Small</button>
+          <button style={sizeButtonStyle(10)} onClick={() => restartGame(10)}>Medium</button>
+          <button style={sizeButtonStyle(14)} onClick={() => restartGame(14)}>Large</button>
         </div>
 
-        <p className="timer">Time: {time}s</p>
+        <p className="timer">
+          Time: {time}s &nbsp;|&nbsp; Moves: {moves}
+        </p>
+
         <p className="best-time">
           Best: {bestTime ? `${bestTime}s` : "—"}
         </p>
