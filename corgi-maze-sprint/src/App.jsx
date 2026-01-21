@@ -41,7 +41,6 @@ function generateMaze(size) {
 
   dfs(0, 0);
 
-  // Ensure goal is reachable
   maze[size - 1][size - 1] = 0;
 
   let r = 0;
@@ -69,9 +68,7 @@ function App() {
 
   useEffect(() => {
     let interval;
-    if (timerActive) {
-      interval = setInterval(() => setTime(t => t + 1), 1000);
-    }
+    if (timerActive) interval = setInterval(() => setTime(t => t + 1), 1000);
     return () => clearInterval(interval);
   }, [timerActive]);
 
@@ -128,6 +125,14 @@ function App() {
     containerRef.current.focus();
   };
 
+  const sizeButtonStyle = (size) => ({
+    backgroundColor: mazeSize === size ? "#3b82f6" : "#1f2933",
+    color: mazeSize === size ? "#ffffff" : "#cbd5e1",
+    border: mazeSize === size ? "1px solid #60a5fa" : "1px solid #374151",
+    boxShadow: mazeSize === size ? "0 0 10px rgba(59,130,246,0.6)" : "none",
+    transform: mazeSize === size ? "scale(1.05)" : "scale(1)"
+  });
+
   const cells = [];
   for (let r = 0; r < mazeSize; r++) {
     for (let c = 0; c < mazeSize; c++) {
@@ -151,9 +156,15 @@ function App() {
         <h1>Corgi Maze Sprint</h1>
 
         <div className="controls">
-          <button onClick={() => restartGame(8)}>Small</button>
-          <button onClick={() => restartGame(10)}>Medium</button>
-          <button onClick={() => restartGame(14)}>Large</button>
+          <button style={sizeButtonStyle(8)} onClick={() => restartGame(8)}>
+            Small
+          </button>
+          <button style={sizeButtonStyle(10)} onClick={() => restartGame(10)}>
+            Medium
+          </button>
+          <button style={sizeButtonStyle(14)} onClick={() => restartGame(14)}>
+            Large
+          </button>
         </div>
 
         <p className="timer">Time: {time}s</p>
